@@ -2,13 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-interface IUser {
-  email: string;
-  password: string;
-  createJWT: () => string;
-  comparePasswords: (candidatePassword: string) => Promise<boolean>;
-}
+import IUser from "./IUser";
 
 const UserSchema = new mongoose.Schema<IUser>({
   email: {
@@ -26,6 +20,12 @@ const UserSchema = new mongoose.Schema<IUser>({
     trim: true,
     select: false,
   },
+  profiles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profile",
+    },
+  ],
 });
 
 UserSchema.pre("save", async function () {

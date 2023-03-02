@@ -8,7 +8,6 @@ const register = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
-    console.log(req.body, email, password);
     if (!email || !password) {
       return next(
         new (appError as any)(
@@ -29,9 +28,7 @@ const register = catchAsync(
 
     const token = user.createJWT();
     res.status(StatusCodes.CREATED).json({
-      user: {
-        email: user.email,
-      },
+      email: user.email,
       token,
     });
   }
@@ -69,7 +66,7 @@ const login = catchAsync(
     }
     const token = user.createJWT();
     user.password = "";
-    res.status(StatusCodes.OK).json({ user, token });
+    res.status(StatusCodes.OK).json({ email, token });
   }
 );
 export { register, login };

@@ -1,17 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 
-export default function handleError(
-  this: any,
+interface IAppError {
+  message: string;
+  statusCode: StatusCodes;
+  status: string;
+  isOperational: boolean;
+}
+
+const createAppError = (
   message: string,
   statusCode: StatusCodes
-) {
-  const status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-  const isOperational = true;
-  Error.captureStackTrace(this, handleError);
-  return {
-    message,
-    statusCode,
-    status,
-    isOperational,
-  };
-}
+): IAppError => ({
+  message,
+  statusCode,
+  status: `${statusCode}`.startsWith("4") ? "fail" : "error",
+  isOperational: true,
+});
+
+export default createAppError;
