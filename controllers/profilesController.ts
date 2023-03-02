@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import createAppError from "../utils/appError";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import User from "../models/User";
 import Profile from "../models/Profile";
 
@@ -22,14 +22,16 @@ export const getProfiles = async (req: any, res: Response) => {
 };
 
 export const createProfile = async (
-  req: Request,
+  req: any,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name, image, email } = req.body;
+    const { name, image } = req.body;
 
-    const user = await User.findOne({ email });
+    const userId = req.user.userId;
+
+    const user = await User.findOne(userId);
 
     if (!user) {
       throw createAppError("User not found", StatusCodes.NOT_FOUND);
@@ -44,7 +46,11 @@ export const createProfile = async (
       );
     }
 
-    if (profiles.find((profile) => profile.name === name)) {
+    if (
+      profiles.find(
+        (profile) => profile.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
       throw createAppError(
         "You already have a profile with that name",
         StatusCodes.BAD_REQUEST

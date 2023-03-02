@@ -1,32 +1,28 @@
-import User from "../models/User";
+import { Request, Response } from "express";
+import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
+import User from "../models/User";
 import catchAsync from "../utils/catchAsync";
-import appError from "../utils/appError.js";
-import { Request, Response, NextFunction } from "express";
+import appError from "../utils/appError";
 
-const register = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+const register: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return next(
-        new (appError as any)(
-          "All fields are required",
-          StatusCodes.BAD_REQUEST
-        )
-      );
+      throw appError("All fields are required", StatusCodes.BAD_REQUEST);
     }
 
     const emailAlreadyUsed = await User.findOne({ email });
+
     if (emailAlreadyUsed) {
-      return next(
-        new (appError as any)("Email already used", StatusCodes.BAD_REQUEST)
-      );
+      throw appError("Email already used", StatusCodes.BAD_REQUEST);
     }
 
     const user = await User.create({ email, password });
 
     const token = user.createJWT();
+
     res.status(StatusCodes.CREATED).json({
       email: user.email,
       token,
@@ -34,39 +30,26 @@ const register = catchAsync(
   }
 );
 
-const login = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+const login: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
-      return next(
-        new (appError as any)(
-          "All fields are required",
-          StatusCodes.BAD_REQUEST
-        )
-      );
-    }
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-      return next(
-        new (appError as any)(
-          "We don't recognize that email & password combination.",
-          StatusCodes.UNAUTHORIZED
-        )
-      );
+      throw appError("All fields are required", StatusCodes.BAD_REQUEST);
     }
 
-    const isPasswordCorrect = await user.comparePasswords(password);
-    if (!isPasswordCorrect) {
-      return next(
-        new (appError as any)(
-          "We don't recognize that email & password combination.",
-          StatusCodes.UNAUTHORIZED
-        )
-      );
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user || !(await user.comparePasswords(password))) {
+      throw appError("Incorrect email or password", StatusCodes.UNAUTHORIZED);
     }
+
     const token = user.createJWT();
+
     user.password = "";
+
     res.status(StatusCodes.OK).json({ email, token });
   }
 );
+
 export { register, login };
