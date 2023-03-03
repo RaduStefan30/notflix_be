@@ -73,3 +73,74 @@ export const createProfile = async (
     next(appError);
   }
 };
+
+export const editProfile = async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { name, newName, newImage } = req.body;
+
+    if (!newName && !newImage) {
+      throw createAppError(
+        "You need to provide a new name or image",
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    if (name === newName) {
+      throw createAppError(
+        "The new name can't be the same as the old one",
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    const userId = req.user.userId;
+
+    const user = await User.findOne(userId, "profiles").populate("profiles", {
+      name: 1,
+      _id: 0,
+    });
+
+    if (!user) {
+      throw createAppError("User not found", StatusCodes.NOT_FOUND);
+    }
+
+    const alreadyTaken = user.profiles.find(
+      (profile: any) => profile.name === newName
+    );
+
+    if (alreadyTaken) {
+      throw createAppError(
+        "You already have a profile with that name",
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    const profileToEdit = user.profiles.filter((profile: any) => {
+      return profile.name === name;
+    })[0] as any;
+
+    if (!profileToEdit) {
+      throw createAppError(
+        "You don't have a profile with that name",
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    const profile = await Profile.findOneAndUpdate(
+      { name },
+      { name: newName, image: newImage },
+      { returnDocument: "after" }
+    );
+
+    res.status(StatusCodes.OK).json({ profile });
+  } catch (error) {
+    const appError = createAppError(
+      error.message,
+      error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
+    );
+    next(appError);
+  }
+};

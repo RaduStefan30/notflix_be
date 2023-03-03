@@ -1,7 +1,11 @@
 import express from "express";
-import { createProfile, getProfiles } from "../controllers/profilesController";
+import {
+  createProfile,
+  editProfile,
+  getProfiles,
+} from "../controllers/profilesController";
 const router = express.Router();
 
-router.route("/").get(getProfiles).post(createProfile);
+router.route("/").get(getProfiles).post(createProfile).put(editProfile);
 
 export default router;
