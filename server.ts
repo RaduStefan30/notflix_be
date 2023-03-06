@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import app from "./app";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  secure: true,
+});
 
 dotenv.config({ path: "./config.env" });
 
@@ -39,3 +44,5 @@ process.on("unhandledRejection", (err: any) => {
     process.exit(1);
   });
 });
+
+export default cloudinary;

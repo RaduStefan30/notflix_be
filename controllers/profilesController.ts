@@ -3,6 +3,7 @@ import createAppError from "../utils/appError";
 import { Response, NextFunction } from "express";
 import User from "../models/User";
 import Profile from "../models/Profile";
+import cloudinary from "../server";
 
 export const getProfiles = async (req: any, res: Response) => {
   try {
@@ -142,5 +143,19 @@ export const editProfile = async (
       error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
     );
     next(appError);
+  }
+};
+
+export const getProfileImages = async (req: any, res: Response) => {
+  try {
+    const images = await cloudinary.search
+      .expression("folder:profile")
+      .execute();
+
+    const imagesUrls = images.resources.map((image: any) => image.url);
+
+    res.status(StatusCodes.OK).json({ imagesUrls });
+  } catch (error) {
+    console.log(error);
   }
 };
