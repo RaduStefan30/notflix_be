@@ -3,4 +3,5 @@ export default interface IMedia {
   image: string;
   genre: string;
   mediaType: string;
+  isOnMainPage: boolean;
 }
