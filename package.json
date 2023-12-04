@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node --experimental-specifier-resolution=node --loader ts-node/esm ./server.ts",
-    "dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' server.ts"
+    "start-windows": "node --experimental-specifier-resolution=node --loader \"ts-node/esm\" ./server.ts",
+    "dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' server.ts",
+    "dev-windows": "nodemon --watch \"./**/*.ts\" --exec \"node --experimental-specifier-resolution=node --loader ts-node/esm\" server.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
