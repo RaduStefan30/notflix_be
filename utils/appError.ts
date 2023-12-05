@@ -1,11 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 
-interface IAppError {
+type IAppError = {
   message: string;
   statusCode: StatusCodes;
   status: string;
   isOperational: boolean;
-}
+};
 
 const createAppError = (
   message: string,

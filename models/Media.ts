@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import IMedia from "./IMedia";
+import { IMedia } from "./IMedia";
 
 const Media = new mongoose.Schema<IMedia>({
   name: {

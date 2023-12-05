@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import IProfile from "./IProfile";
+import { IProfile } from "./IProfile";
 
 const Profile = new mongoose.Schema<IProfile>({
   name: {

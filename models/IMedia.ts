@@ -1,4 +1,4 @@
-export default interface IMedia {
+export type IMedia = {
   name: string;
   image: string;
   genre: string;

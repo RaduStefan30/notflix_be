@@ -1,4 +1,4 @@
-export default interface IProfile {
+export type IProfile = {
   name: string;
   image: string;
-}
+};
