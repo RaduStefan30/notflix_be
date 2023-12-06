@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import Media from "../models/Media";
 import User from "../models/User";
 import createAppError from "../utils/appError";
+import { MAIN_MOVIES } from "../utils/constants";
 
 export const getMedia = async (req: any, res: Response) => {
   try {
@@ -45,7 +46,11 @@ export const createMedia = async (
 
 export const getMainPageMedia = async (req: any, res: Response) => {
   try {
-    const media = await Media.find({ isOnMainPage: true });
+    const media = await Media.find({
+      _id: {
+        $in: MAIN_MOVIES,
+      },
+    });
     res.status(StatusCodes.OK).json({ media });
   } catch (error) {
     const appError = createAppError(

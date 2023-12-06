@@ -18,10 +18,6 @@ const Media = new mongoose.Schema<IMedia>({
     type: String,
     required: true,
   },
-  isOnMainPage: {
-    type: Boolean,
-    required: true,
-  },
 });
 
 export default mongoose.model("Media", Media);
