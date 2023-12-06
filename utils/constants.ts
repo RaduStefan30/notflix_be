@@ -1,4 +1,4 @@
-export const MAIN_MOVIES = [
+export const MAIN_TITLES = [
   "64076830340186d308bad960",
   "640767f9340186d308bad95a",
   "640766c2340186d308bad94d",
